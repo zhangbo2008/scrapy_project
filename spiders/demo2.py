@@ -125,7 +125,7 @@ class DmozSpider2(scrapy.Spider): # 继承Spider类
 
 
     base_url=html[:html.rindex(r'/')+1]
-    print(base_url,77777777777777)
+    # print(base_url,77777777777777)
     aaa=base_url
     baseUrl=base_url
     for i in range(len(out)):
@@ -138,7 +138,7 @@ class DmozSpider2(scrapy.Spider): # 继承Spider类
 
 
 
-    print(saveall)
+    # print(saveall)
 
 
 

@@ -12,7 +12,9 @@ if os.path.exists('output'):
 import os,sys
 # os.system("scrapy crawl dmoz")  # 爬取https://blog.scrapinghub.com/
 # os.system("scrapy crawl dmoz2")  # 爬取https://www.51voa.com/Bilingual_News_1.html
-os.system("scrapy crawl dmoz3")  # 爬取 https://www.51test.net/yyzy/syxw/
+# os.system("scrapy crawl dmoz3")  # 爬取 https://www.51test.net/yyzy/syxw/
+# os.system("scrapy crawl dmoz4")  # 爬取 http://www.kekenet.com/read/news/
+os.system("scrapy crawl dmoz5")  # 爬取 http://www.171english.cn/news/
 
 
 '''

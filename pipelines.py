@@ -14,5 +14,10 @@ class TutorialPipeline(object):
             os.mkdir('output')
         name='output/'+item['title'].split(r'/')[-1]+'.json'
         print(name,9348938493849384)
-        with open(name,'w') as f :
-             f.write(content)
+        # 尝试用2种编码来写文件
+        try:
+            with open(name,'w',encoding='utf-8') as f :
+                 f.write(content)
+        except:
+            with open(name,'w',encoding='gbk') as f :
+                 f.write(content)

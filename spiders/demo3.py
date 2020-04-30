@@ -124,10 +124,10 @@ class DmozSpider3(scrapy.Spider): # 继承Spider类
             # print(s.text)
             if s.text=="下一页":
                 now=s.extract()
-                print(now,12345)
+                # print(now,12345)
                 # 需要对now进行中文转码
                 # now=parse.quote(now.get('href'))
-                print("loook",now)
+                # print("loook",now)
                 # 注意这种旧网站的编码方式.
                 now = 'https:'+parse.quote(now.get('href'), safe=";/?:@&=+$, ", encoding="gbk")
                 # print(now,"now网页是!!!!!!!!!!")
@@ -148,9 +148,9 @@ class DmozSpider3(scrapy.Spider): # 继承Spider类
 
 
     #成功爬取到下面.
-    print("进入demo3!!!!!!!!!!")
+    # print("进入demo3!!!!!!!!!!")
     # 现在是预处理.就是要找到所有的一级网页!!!!!!!!!!! 然后赋值给saveall
-    print(saveall,"打印主网页!!!!!!!!!!!!")
+    # print(saveall,"打印主网页!!!!!!!!!!!!")
     # # 提取所有的href
     # tmpurl = saveall[-1]
     # from selenium import webdriver
