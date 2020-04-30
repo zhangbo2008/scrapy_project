@@ -106,7 +106,7 @@ class DmozSpider3(scrapy.Spider): # 继承Spider类
         from bs4 import BeautifulSoup
 
         url = tmpurl
-        print(url,8989898998)
+        # print(url,8989898998)
         page = requests.get(url)
         page.encoding = 'gb18030'
         # soup = BeautifulSoup(page,"html.parser")
@@ -119,9 +119,9 @@ class DmozSpider3(scrapy.Spider): # 继承Spider类
         # tmp=bs.find_all(text=re.compile("Next[ ]*"))
         # print(tmp)
         now=None
-        print(url,bs('a'),777777777777777777)
+        # print(url,bs('a'),777777777777777777)
         for s in bs('a'):
-            print(s.text)
+            # print(s.text)
             if s.text=="下一页":
                 now=s.extract()
                 print(now,12345)
@@ -130,11 +130,11 @@ class DmozSpider3(scrapy.Spider): # 继承Spider类
                 print("loook",now)
                 # 注意这种旧网站的编码方式.
                 now = 'https:'+parse.quote(now.get('href'), safe=";/?:@&=+$, ", encoding="gbk")
-                print(now,"now网页是!!!!!!!!!!")
+                # print(now,"now网页是!!!!!!!!!!")
         if now==None:
             break
         else:
-            print(now,556565656565)
+            # print(now,556565656565)
             saveall.append(now)
 
 
@@ -202,7 +202,7 @@ class DmozSpider3(scrapy.Spider): # 继承Spider类
     #
     #
     # start_urls =saveall  # 开始爬取的链接
-
+    start_urls = saveall  # 开始爬取的链接
 
     def parse(self, response): # 一级爬取代码
         #xpath教学:https://blog.csdn.net/qq_27283619/article/details/88704479
@@ -211,7 +211,7 @@ class DmozSpider3(scrapy.Spider): # 继承Spider类
         # 好像使用框架scrapy没法debug.只能疯狂print了
         print("111111111111111111")
         print(response,'**********************当前爬取的网页链接')
-        div_list = response.xpath('//div[@class="List"]/ul/li/a/@href')
+        div_list = response.xpath('//div[@class="news-list-left-content"]/ul/li/a/@href')
         # print(div_list[0])
         # print(div_list[-1])
         # print((div_list))
@@ -220,7 +220,7 @@ class DmozSpider3(scrapy.Spider): # 继承Spider类
         for i in div_list:
             # print(self.baseUrl+i.extract())# 获得了全部链接,进入二级爬虫.
             item = en_youth()
-            item['link'] = self.baseUrl+i.extract()
+            item['link'] = 'https:'+i.extract()
             # print(item['link'],"lianjie !!!!!!!!!!!!!")
             #每一次一级爬虫得到的页面,都触发一次二级爬虫.
             yield scrapy.Request(item['link'], callback=self.parse_detail
@@ -275,10 +275,12 @@ class DmozSpider3(scrapy.Spider): # 继承Spider类
         item=en_youth()
 
         #下面要设计多重xpath判断.因为格式不同意.
-        item['neirong']= response.xpath('//div[@class="Content"]/div/text()').extract()
-        item['neirong']+= response.xpath('//div[@class="Content"]/div/p/text()').extract()
-        print(item['neirong'],'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        item['neirong']+=response.xpath('//div[@class="Content"]/p/text()').extract()
+        item['neirong']= response.xpath('//div[@class="content-txt"]/div/text()').extract()
+        item['neirong']+= response.xpath('//div[@class="content-txt"]/div/p/text()').extract()
+        item['neirong']+= response.xpath('//div[@class="content-txt"]/p/text()').extract()
+
+
+        print(item['neirong'], '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         # print(item['neirong'], 8888888888888888888)
 
 
