@@ -1,11 +1,15 @@
 import shutil
 from urllib.request import quote
 import scrapy
+from scrapy.http import HtmlResponse
+import re
 from tutorial.items import *
 from urllib import parse
+from w3lib.html import *
+from w3lib.html import remove_tags
 class DmozSpider4(scrapy.Spider): # 继承Spider类
 
-    print("进入4了!!!!!!!!!")
+    print("进入5了!!!!!!!!!")
     import os
     if  os.path.exists('output'):
         shutil.rmtree('output')
@@ -18,6 +22,9 @@ class DmozSpider4(scrapy.Spider): # 继承Spider类
     '''
     name = "dmoz5" # 爬虫的唯一标识，不能重复，启动爬虫的时候要用
     html='http://www.171english.cn/news/'
+    # html='http://www.171english.cn/news/2018'
+    # html='http://www.171english.cn/news/2019'
+    html='http://www.171english.cn/news/2018/june/'
 
 
 
@@ -201,29 +208,48 @@ class DmozSpider4(scrapy.Spider): # 继承Spider类
     #
     #
     #
-    #
+    #[url1,...........urln]
     #
     #
     #
     # start_urls =saveall  # 开始爬取的链接
-    start_urls = saveall  # 开始爬取的链接
+
+
+    # 直接修改这里面!!!!!!!!!!!!!
+
+    saveall=[
+
+        #'http://www.171english.cn/news/2018/june/',
+             'http://www.171english.cn/news/2018/may/',
+             'http://www.171english.cn/news/2018/april/',
+             'http://www.171english.cn/news/2018/march/',
+             'http://www.171english.cn/news/2018/february/',
+             'http://www.171english.cn/news/2017/january/',
+
+                        ]
+    start_urls = saveall  # 开始爬取的链接 start_urls必须用这个名.
+
+
+
 
     def parse(self, response): # 一级爬取代码
         #xpath教学:https://blog.csdn.net/qq_27283619/article/details/88704479
         #https://www.cnblogs.com/wt7018/p/11749778.html
         # @表示属性
         # 好像使用框架scrapy没法debug.只能疯狂print了
+        # help(response.url)
+        print(response.url,77777777777777777777777777777777777777777777777777)
         print("111111111111111111")
         print(response,'**********************当前爬取的网页链接')
-        div_list = response.xpath('//div[@id="left"]/li/a/@href')  # 加入正则
+        div_list = response.xpath('//div[@id="left"]/ul/li/a/@href')  # 加入正则
 
-        div_list=[self.html+i.extract() for i in div_list]
+        div_list=[response.url+i.extract() for i in div_list]
         # print(div_list)
         # print(div_list[0])
         # print(div_list[-1])
         # print((div_list))
         print("进入了一级爬虫")
-        # print(div_list,99999999999999999999999999999999999999)
+        print(div_list,99999999999999999999999999999999999999)
         for i in div_list:
             # print(self.baseUrl+i.extract())# 获得了全部链接,进入二级爬虫.
             item = en_youth()
@@ -241,25 +267,83 @@ class DmozSpider4(scrapy.Spider): # 继承Spider类
         # print(infomation,988776754456435345435345435)
         # print(infomation,"二级爬取的地址是")
         item = response.body
+        # print(item,9090909090909090909090909090)
         # print(item,444444444444444444444444444444444444)
         # print(item)
         # print(response.body,"???????????????")
         # print("********打印二次爬虫结果")#[@class="TRS_Editor"]
         item=en_youth()
 
+
+        # 预过滤: 改了body,但是还是不生效.??
+        #
+        # # response.body="dfadsf"
+        #
+        # tmp=re.sub(r'<script.*</script>','',str(response.body))
+        # print(tmp,6666666666666666666666666666666666666666)
+        # response._set_body(tmp.encode(response.encoding))
+        # print(response.body,777777777777777777777777777777777777777777777)
+        # print(response.body,88888888888888888888888888888888888)
+        # HtmlResponse.replace()
+        # HtmlResponse.replace('body',remove_tags_with_content(response.body, 'script'))
+        # HtmlResponse.replace('body',remove_tags_with_content(response.body, 'script'))
+
+        tmp2=response.xpath('//td[@class="e14"]//text()').extract()
+
+
+
+
+
+
+
+
+
+
+
         #下面要设计多重xpath判断.因为格式不同意.
-        item['neirong']= response.xpath('//td[@class="e14"]//p//text()').extract()
-        item['neirong']+= response.xpath('//td[@class="e14"]//text()').extract()
+        item['neirong']= response.xpath('//td[@class="e14"]//p').extract()
+        item['neirong']+= response.xpath('//div[@id="left"]//p').extract()
+        item['neirong']+= response.xpath('//td[@class="e14"]').extract()
+        # print(item['neirong'],22222222222222222222222)
+
+
+        save=[]
+
+        item['neirong']=[i for i in item['neirong'] if '<script' not in i]
+        item['neirong']=[replace_tags(i,'') for i in item['neirong']]
+
+
+        print(item['neirong'])
+
+
+
+
+
+
         # item['neirong']+= response.xpath('//div[@id="article"]/div/p/text()').extract()
         # item['neirong']+= response.xpath('//div[@id="article"]/p/text()').extract()
+
+        # 下面进行脚本滤过.
+
+        # item['neirong'] = filter(lambda x: '<script>'not in x, item['neirong'])
+
+
+
+
+
+
+
+
+
+
 
 
         # print(item['neirong'], '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         # print(item['neirong'], 8888888888888888888)
 
 
-        save2='\n'.join(item['neirong'])
-        # print(save2,9999999999999999999999999999999999999)
+        save2='\r\n'.join(item['neirong'])
+        print(save2,9999999999999999999999999999999999999)
         item['neirong']=save2
         item['title']=infomation
         yield item
